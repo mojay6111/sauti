@@ -2,135 +2,225 @@
 
 import { useState } from "react";
 
-const LABEL_COUNTS = [
-  { label: "hate_speech",        color: "bg-red-400",    count: 0 },
-  { label: "offensive_language", color: "bg-orange-400", count: 0 },
-  { label: "distress_trigger",   color: "bg-yellow-400", count: 0 },
-  { label: "gaslighting",        color: "bg-purple-400", count: 0 },
-  { label: "manipulation",       color: "bg-pink-400",   count: 0 },
-  { label: "ambiguous",          color: "bg-gray-400",   count: 0 },
-  { label: "clean",              color: "bg-emerald-400",count: 0 },
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const DEV_KEY = process.env.NEXT_PUBLIC_DEMO_API_KEY ?? "dev-local-key-do-not-use-in-prod";
+
+const LABELS = [
+  { id: "hate_speech",        color: "#ff4d6d", desc: "Targets a group by ethnicity, religion, or gender" },
+  { id: "offensive_language", color: "#ff8c42", desc: "Personal insults or degrading language" },
+  { id: "distress_trigger",   color: "#ffd166", desc: "Content designed to cause fear or panic" },
+  { id: "gaslighting",        color: "#c77dff", desc: "Denies or distorts someone's perception of reality" },
+  { id: "manipulation",       color: "#7c6aff", desc: "Coercive or emotionally exploitative tactics" },
+  { id: "ambiguous",          color: "#5a5a7a", desc: "Context-dependent — routed for human review" },
+  { id: "clean",              color: "#00e5a0", desc: "No harmful content detected" },
+];
+
+const STATUS_CARDS = [
+  { label: "API Status",     value: "Online",   sub: "v0.1.0",        accent: "#00e5a0" },
+  { label: "Model",          value: "Baseline", sub: "TF-IDF + LR",   accent: "#7c6aff" },
+  { label: "Requests today", value: "—",        sub: "tracking soon", accent: "#5a5a7a" },
+  { label: "Flagged",        value: "—",        sub: "pending review", accent: "#ffd166" },
 ];
 
 export default function DashboardPage() {
   const [copied, setCopied] = useState(false);
-  const devKey = "dev-local-key-do-not-use-in-prod";
+  const [healthData, setHealthData] = useState<any>(null);
+  const [checking, setChecking] = useState(false);
 
   function copyKey() {
-    navigator.clipboard.writeText(devKey);
+    navigator.clipboard.writeText(DEV_KEY);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
+  async function checkHealth() {
+    setChecking(true);
+    try {
+      const r = await fetch(`${API_URL}/health`);
+      setHealthData(await r.json());
+    } catch {
+      setHealthData({ status: "unreachable" });
+    } finally {
+      setChecking(false);
+    }
+  }
+
   return (
-    <div className="space-y-10">
+    <main style={{ maxWidth: "960px", margin: "0 auto", padding: "3rem 2rem 6rem" }}>
 
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold">Developer Dashboard</h1>
-        <p className="text-gray-500 mt-1 text-sm">
-          API keys, usage, and model status. Production key management coming in v0.2.
+      <div style={{ marginBottom: "3rem" }} className="afu">
+        <div style={{
+          fontFamily: "var(--font-mono)", fontSize: "11px",
+          color: "var(--accent)", letterSpacing: "0.1em", marginBottom: "12px",
+        }}>
+          DEVELOPER DASHBOARD
+        </div>
+        <h1 style={{
+          fontFamily: "var(--font-display)", fontSize: "2.5rem",
+          fontWeight: 800, letterSpacing: "-0.04em", marginBottom: "8px",
+        }}>
+          Build with Sauti
+        </h1>
+        <p style={{ color: "var(--text-muted)", fontSize: "15px", fontWeight: 300 }}>
+          API keys, model status, and integration guides.
         </p>
       </div>
 
       {/* Status cards */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {[
-          { label: "API Status",     value: "Online",   sub: "v0.1.0",        ok: true  },
-          { label: "Model",          value: "Baseline", sub: "TF-IDF + LR",   ok: true  },
-          { label: "Requests today", value: "—",        sub: "tracking soon", ok: null  },
-          { label: "Pending review", value: "—",        sub: "flagged items",  ok: null  },
-        ].map((card) => (
-          <div
-            key={card.label}
-            className="rounded-xl border border-gray-200 bg-white p-4 space-y-1"
-          >
-            <p className="text-xs text-gray-400">{card.label}</p>
-            <p className="text-xl font-semibold">{card.value}</p>
-            <p className="text-xs text-gray-400">{card.sub}</p>
-            {card.ok !== null && (
-              <span
-                className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
-                  card.ok
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "bg-gray-50 text-gray-500"
-                }`}
-              >
-                {card.ok ? "● live" : "● soon"}
-              </span>
-            )}
+      <div className="afu1" style={{
+        display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+        gap: "1px", background: "var(--border)",
+        borderRadius: "12px", overflow: "hidden", marginBottom: "2rem",
+      }}>
+        {STATUS_CARDS.map(card => (
+          <div key={card.label} style={{ background: "var(--bg-card)", padding: "1.5rem" }}>
+            <div style={{
+              fontFamily: "var(--font-mono)", fontSize: "10px",
+              color: "var(--text-dim)", letterSpacing: "0.08em", marginBottom: "12px",
+            }}>
+              {card.label.toUpperCase()}
+            </div>
+            <div style={{
+              fontFamily: "var(--font-display)", fontSize: "1.75rem",
+              fontWeight: 700, letterSpacing: "-0.03em",
+              color: card.accent, marginBottom: "4px",
+            }}>
+              {card.value}
+            </div>
+            <div style={{ fontSize: "12px", color: "var(--text-dim)" }}>{card.sub}</div>
           </div>
         ))}
       </div>
 
-      {/* API key */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
+      {/* Health check */}
+      <div className="afu1" style={{
+        background: "var(--bg-card)", border: "1px solid var(--border)",
+        borderRadius: "12px", padding: "1.5rem", marginBottom: "2rem",
+        display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem",
+      }}>
         <div>
-          <h2 className="font-medium">Your API key</h2>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Include this in every request as the <code className="bg-gray-100 px-1 rounded text-xs">X-API-Key</code> header.
-          </p>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--text-dim)", letterSpacing: "0.08em", marginBottom: "6px" }}>
+            API HEALTH
+          </div>
+          {healthData ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{
+                width: "8px", height: "8px", borderRadius: "50%",
+                background: healthData.status === "ok" ? "var(--accent)" : "var(--red)",
+                display: "inline-block",
+                boxShadow: healthData.status === "ok" ? "0 0 8px var(--accent)" : "0 0 8px var(--red)",
+              }} />
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--text)" }}>
+                {healthData.status === "ok"
+                  ? `Online · model: ${healthData.model_version} · uptime: ${Math.round(healthData.uptime_seconds)}s`
+                  : "Unreachable — is Docker running?"}
+              </span>
+            </div>
+          ) : (
+            <div style={{ color: "var(--text-muted)", fontSize: "13px" }}>Click to check API status</div>
+          )}
         </div>
+        <button onClick={checkHealth} disabled={checking} style={{
+          fontFamily: "var(--font-mono)", fontSize: "12px",
+          padding: "8px 18px", borderRadius: "7px",
+          border: "1px solid var(--border-hi)",
+          background: "transparent", color: "var(--text-muted)",
+          cursor: "pointer", transition: "all 0.15s",
+          letterSpacing: "0.03em",
+        }}>
+          {checking ? "Checking..." : "Check health →"}
+        </button>
+      </div>
 
-        <div className="flex items-center gap-3">
-          <code className="flex-1 rounded-lg bg-gray-50 border border-gray-200 px-4 py-2.5 text-sm font-mono text-gray-700 overflow-x-auto">
-            {devKey}
+      {/* API Key */}
+      <div className="afu2" style={{
+        background: "var(--bg-card)", border: "1px solid var(--border)",
+        borderRadius: "12px", padding: "1.5rem", marginBottom: "2rem",
+      }}>
+        <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--text-dim)", letterSpacing: "0.08em", marginBottom: "1rem" }}>
+          YOUR API KEY
+        </div>
+        <div style={{ display: "flex", gap: "10px", marginBottom: "1rem" }}>
+          <code style={{
+            flex: 1, background: "var(--bg-raised)",
+            border: "1px solid var(--border)", borderRadius: "8px",
+            padding: "10px 14px", fontFamily: "var(--font-mono)",
+            fontSize: "13px", color: "var(--accent)",
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          }}>
+            {DEV_KEY}
           </code>
-          <button
-            onClick={copyKey}
-            className="rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm hover:border-gray-300 transition min-w-[80px]"
-          >
+          <button onClick={copyKey} style={{
+            fontFamily: "var(--font-mono)", fontSize: "12px",
+            padding: "10px 18px", borderRadius: "8px",
+            border: "1px solid var(--border-hi)",
+            background: copied ? "var(--accent-dim)" : "transparent",
+            color: copied ? "var(--accent)" : "var(--text-muted)",
+            cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
+          }}>
             {copied ? "Copied ✓" : "Copy"}
           </button>
         </div>
-
-        <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-700">
-          ⚠️  This is the local dev key. For production, generate a secure key with:{" "}
-          <code className="font-mono">python -c "import secrets; print(secrets.token_urlsafe(32))"</code>{" "}
-          and set it in your <code className="font-mono">.env</code> file.
+        <div style={{
+          background: "rgba(255,209,102,0.06)", border: "1px solid rgba(255,209,102,0.15)",
+          borderRadius: "8px", padding: "10px 14px",
+          fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--yellow)",
+          lineHeight: 1.6,
+        }}>
+          ⚠ Dev key only. For production generate with:{" "}
+          <code style={{ color: "var(--text-muted)" }}>
+            python -c "import secrets; print(secrets.token_urlsafe(32))"
+          </code>
         </div>
       </div>
 
       {/* Quick start */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-        <h2 className="font-medium">Quick start</h2>
-        <div className="space-y-3">
+      <div className="afu3" style={{ marginBottom: "2rem" }}>
+        <div style={{
+          fontFamily: "var(--font-mono)", fontSize: "11px",
+          color: "var(--accent)", letterSpacing: "0.1em", marginBottom: "1.5rem",
+        }}>
+          QUICK START
+        </div>
+        <div style={{
+          display: "grid", gridTemplateColumns: "1fr 1fr",
+          gap: "1px", background: "var(--border)",
+          borderRadius: "12px", overflow: "hidden",
+        }}>
           {[
             {
-              title: "cURL",
+              lang: "cURL",
               code: `curl -X POST http://localhost:8000/v1/analyze \\
-  -H "X-API-Key: ${devKey}" \\
+  -H "X-API-Key: ${DEV_KEY.slice(0, 16)}..." \\
   -H "Content-Type: application/json" \\
   -d '{"text": "Wewe ni mjinga kabisa"}'`,
             },
             {
-              title: "Python",
-              code: `import httpx
-
-r = httpx.post(
-    "http://localhost:8000/v1/analyze",
-    headers={"X-API-Key": "${devKey}"},
-    json={"text": "Tutakukumbuka baada ya uchaguzi"},
-)
-print(r.json())`,
+              lang: "JavaScript",
+              code: `const res = await fetch(
+  "http://localhost:8000/v1/analyze",
+  {
+    method: "POST",
+    headers: { "X-API-Key": "YOUR_KEY" },
+    body: JSON.stringify({ text: "..." }),
+  }
+);
+const data = await res.json();`,
             },
-            {
-              title: "JavaScript",
-              code: `const res = await fetch("http://localhost:8000/v1/analyze", {
-  method: "POST",
-  headers: {
-    "X-API-Key": "${devKey}",
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({ text: "Wewe ni mjinga kabisa" }),
-});
-const data = await res.json();
-console.log(data.predictions);`,
-            },
-          ].map((ex) => (
-            <div key={ex.title} className="space-y-1.5">
-              <p className="text-xs font-medium text-gray-500">{ex.title}</p>
-              <pre className="rounded-lg bg-gray-900 text-gray-100 p-4 text-xs overflow-x-auto leading-relaxed">
+          ].map(ex => (
+            <div key={ex.lang} style={{ background: "var(--bg-card)", padding: "1.5rem" }}>
+              <div style={{
+                fontFamily: "var(--font-mono)", fontSize: "10px",
+                color: "var(--text-dim)", letterSpacing: "0.08em", marginBottom: "1rem",
+              }}>
+                {ex.lang}
+              </div>
+              <pre style={{
+                fontFamily: "var(--font-mono)", fontSize: "11px",
+                color: "var(--text-muted)", lineHeight: 1.8,
+                whiteSpace: "pre-wrap", wordBreak: "break-all",
+              }}>
                 {ex.code}
               </pre>
             </div>
@@ -139,56 +229,41 @@ console.log(data.predictions);`,
       </div>
 
       {/* Label reference */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-        <h2 className="font-medium">Label reference</h2>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {[
-            { id: "hate_speech",        desc: "Targets a group by ethnicity, religion, gender, etc." },
-            { id: "offensive_language", desc: "Personal insults or degrading language" },
-            { id: "distress_trigger",   desc: "Content designed to cause fear or panic" },
-            { id: "gaslighting",        desc: "Denies or distorts someone's perception of reality" },
-            { id: "manipulation",       desc: "Coercive or emotionally exploitative tactics" },
-            { id: "ambiguous",          desc: "Context-dependent — routed for human review" },
-            { id: "clean",              desc: "No harmful content detected" },
-          ].map((item) => (
-            <div key={item.id} className="flex gap-3 rounded-lg border border-gray-100 p-3">
-              <code className="text-xs font-mono text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded self-start shrink-0">
-                {item.id}
-              </code>
-              <p className="text-xs text-gray-500">{item.desc}</p>
+      <div className="afu4">
+        <div style={{
+          fontFamily: "var(--font-mono)", fontSize: "11px",
+          color: "var(--accent)", letterSpacing: "0.1em", marginBottom: "1.5rem",
+        }}>
+          LABEL REFERENCE
+        </div>
+        <div style={{
+          display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+          gap: "1px", background: "var(--border)",
+          borderRadius: "12px", overflow: "hidden",
+        }}>
+          {LABELS.map(item => (
+            <div key={item.id} style={{ background: "var(--bg-card)", padding: "1.25rem", display: "flex", gap: "12px", alignItems: "flex-start" }}>
+              <span style={{
+                width: "8px", height: "8px", borderRadius: "50%",
+                background: item.color, flexShrink: 0, marginTop: "5px",
+                boxShadow: `0 0 6px ${item.color}66`,
+              }} />
+              <div>
+                <code style={{
+                  fontFamily: "var(--font-mono)", fontSize: "11px",
+                  color: item.color, display: "block", marginBottom: "4px",
+                }}>
+                  {item.id}
+                </code>
+                <p style={{ fontSize: "12px", color: "var(--text-muted)", lineHeight: 1.5 }}>
+                  {item.desc}
+                </p>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Links */}
-      <div className="flex flex-wrap gap-3 text-sm">
-        <a
-          href="http://localhost:8000/docs"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-lg border border-gray-200 bg-white px-4 py-2 hover:border-gray-300 transition"
-        >
-          API docs (Swagger) ↗
-        </a>
-        <a
-          href="http://localhost:8000/health"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-lg border border-gray-200 bg-white px-4 py-2 hover:border-gray-300 transition"
-        >
-          Health check ↗
-        </a>
-        <a
-          href="http://localhost:8080"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-lg border border-gray-200 bg-white px-4 py-2 hover:border-gray-300 transition"
-        >
-          Label Studio (annotation) ↗
-        </a>
-      </div>
-
-    </div>
+    </main>
   );
 }
