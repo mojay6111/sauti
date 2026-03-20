@@ -1,0 +1,36 @@
+# Core ML
+torch>=2.1.0
+transformers>=4.38.0
+datasets>=2.18.0
+scikit-learn>=1.4.0
+numpy>=1.26.0
+pandas>=2.2.0
+
+# Multilingual / African language support
+sentencepiece>=0.1.99   # required by AfroXLM-R tokenizer
+protobuf>=4.25.0
+
+# Explainability
+shap>=0.44.0
+lime>=0.2.0.1
+
+# Experiment tracking
+mlflow>=2.11.0
+
+# Text processing
+regex>=2023.12.25
+langdetect>=1.0.9
+
+# Audio (Phase 2 — comment out if not yet needed)
+# librosa>=0.10.1
+# openai-whisper>=20231117
+
+# Evaluation
+evaluate>=0.4.1
+seqeval>=1.2.2
+
+# Utilities
+tqdm>=4.66.0
+python-dotenv>=1.0.0
+pyyaml>=6.0.1
+loguru>=0.7.2

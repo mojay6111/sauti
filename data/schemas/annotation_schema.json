@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Sauti annotation schema for harmful speech detection in East African social media",
+  "languages": ["en", "sw", "sheng", "mixed"],
+
+  "categories": [
+    {
+      "id": "hate_speech",
+      "label": "Hate Speech",
+      "description": "Content that attacks or dehumanizes a person or group based on protected characteristics",
+      "target_attributes": ["ethnicity", "religion", "gender", "sexual_orientation", "disability", "political_affiliation", "nationality"],
+      "severity_guide": {
+        "1": "Mild stereotyping, borderline generalisation",
+        "2": "Clear negative characterisation of a group",
+        "3": "Dehumanising language, slurs",
+        "4": "Explicit calls for discrimination or exclusion",
+        "5": "Incitement to violence or extermination"
+      }
+    },
+    {
+      "id": "offensive_language",
+      "label": "Offensive Language",
+      "description": "Insults, vulgar abuse, or degrading language not targeting a protected group",
+      "severity_guide": {
+        "1": "Mild vulgarity, borderline rude",
+        "2": "Clear insult directed at an individual",
+        "3": "Sustained verbal abuse",
+        "4": "Highly degrading personal attack",
+        "5": "Extreme dehumanisation of an individual"
+      }
+    },
+    {
+      "id": "distress_trigger",
+      "label": "Distress-Triggering Language",
+      "description": "Content designed or likely to cause fear, panic, anxiety, or emotional destabilisation",
+      "severity_guide": {
+        "1": "Unsettling but mild — could be unintentional",
+        "2": "Clearly distressing framing or threats",
+        "3": "Direct threats or graphic distressing content",
+        "4": "Sustained psychological pressure campaign",
+        "5": "Explicit threats of physical harm"
+      }
+    },
+    {
+      "id": "gaslighting",
+      "label": "Gaslighting",
+      "description": "Patterns that deny, minimise, or distort someone's perception of reality or their own experience",
+      "indicators": [
+        "Denying events the target witnessed or experienced",
+        "Telling someone their memory is wrong without evidence",
+        "Reframing the target's emotional response as overreaction",
+        "Insisting a harmful act did not happen or was misunderstood",
+        "Repeatedly questioning the target's sanity or stability"
+      ],
+      "severity_guide": {
+        "1": "Single instance of mild dismissal",
+        "2": "Clear denial of target's stated experience",
+        "3": "Pattern of reality-denial within one message",
+        "4": "Systematic undermining of target's self-perception",
+        "5": "Coordinated campaign to make target doubt their sanity"
+      }
+    },
+    {
+      "id": "manipulation",
+      "label": "Manipulation",
+      "description": "Coercive, exploitative, or psychologically controlling communication tactics",
+      "tactics": [
+        "guilt_tripping",
+        "love_bombing",
+        "isolation",
+        "threats_of_abandonment",
+        "false_urgency",
+        "emotional_blackmail",
+        "triangulation"
+      ],
+      "severity_guide": {
+        "1": "Subtle pressure or guilt-framing",
+        "2": "Clear emotional leverage or coercion",
+        "3": "Explicit emotional blackmail",
+        "4": "Coordinated isolation or control tactics",
+        "5": "Coercive control pattern, potential abuse indicator"
+      }
+    },
+    {
+      "id": "ambiguous",
+      "label": "Ambiguous / Needs Human Review",
+      "description": "Content that may be harmful depending on context, relationship, or cultural reading — route to human reviewer",
+      "severity_guide": {
+        "1": "Probably fine, flagged out of caution",
+        "2": "Context-dependent — need more info",
+        "3": "Likely harmful but cannot confirm without context",
+        "4": "Probably harmful — escalate",
+        "5": "Almost certainly harmful — urgent review"
+      }
+    }
+  ],
+
+  "label_fields": {
+    "category": "One of the category IDs above",
+    "severity": "Integer 1–5 per category severity guide",
+    "target_group": "If hate_speech: which group is targeted (free text)",
+    "tactic": "If manipulation: which tactic(s) from the tactics list",
+    "rationale_spans": "Array of {start, end, text} — exact substrings justifying the label",
+    "language": "Detected language: en | sw | sheng | mixed",
+    "annotator_confidence": "1=low, 2=medium, 3=high — annotator's confidence in their own label",
+    "notes": "Free text — cultural context, edge case notes, uncertainty"
+  },
+
+  "multi_label": true,
+  "notes": "A single post can have multiple labels, e.g. hate_speech + gaslighting simultaneously. Each label gets its own severity score."
+}

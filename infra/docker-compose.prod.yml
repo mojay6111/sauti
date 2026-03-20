@@ -1,0 +1,58 @@
+version: "3.9"
+
+# Production compose — use this on your VPS/cloud instance
+# Run with: docker-compose -f infra/docker-compose.prod.yml up -d
+
+services:
+
+  api:
+    build:
+      context: ..
+      dockerfile: api/Dockerfile
+    container_name: sauti-api
+    restart: always
+    environment:
+      - ENV=production
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - ../.env
+    volumes:
+      - ../ml/runs:/app/ml/runs:ro          # read-only — only trainer writes models
+      - ../data/feedback:/app/data/feedback  # feedback logs
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+
+  nginx:
+    image: nginx:alpine
+    container_name: sauti-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro        # SSL certs (certbot)
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      api:
+        condition: service_healthy
+
+  # Certbot for SSL — run once to get certs, then comment out
+  # certbot:
+  #   image: certbot/certbot
+  #   volumes:
+  #     - ./nginx/certs:/etc/letsencrypt
+  #   command: certonly --webroot --webroot-path=/var/www/html
+  #              --email admin@sauti.africa --agree-tos --no-eff-email
+  #              -d api.sauti.africa -d sauti.africa

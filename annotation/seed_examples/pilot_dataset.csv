@@ -1,0 +1,31 @@
+id,text,language,category,severity,target_group,tactic,rationale_span,notes
+SE001,"Wote Somali ni terrorists na wezi",sw,hate_speech,4,ethnicity_somali,,Wote Somali ni terrorists na wezi,Collective dehumanisation of Somali community
+SE002,"Wewe ni mjinga kabisa na hujui kitu",sw,offensive_language,2,,,wewe ni mjinga kabisa,Direct personal insult no group dimension
+SE003,"Hukusema hivyo. Unakumbuka vibaya kila wakati.",sw,gaslighting,3,,,Unakumbuka vibaya kila wakati,Attacks reliability of target's memory as a pattern
+SE004,"Baada ya kila kitu nilichofanya kwako unafanya hivi?",sw,manipulation,3,,guilt_tripping,kila kitu nilichofanya kwako,Classic guilt-tripping framing using sacrifice
+SE005,"Nairobi si salama tena. Watoto wanaibiwa kila mahali!",sw,distress_trigger,3,,,Watoto wanaibiwa kila mahali,Likely panic-inducing misinformation
+SE006,"Unaona vitu ambavyo havipo. Pata msaada.",sw,gaslighting,4,,,Unaona vitu ambavyo havipo,Attacking grip on reality and weaponising mental health
+SE007,"Hawa watu wa coast hawajui kusoma au kuandika",sw,hate_speech,2,ethnicity_other,,Hawa watu wa coast,Ethnic generalisation using regional identity pejoratively
+SE008,"Ukiniambia mtu yeyote kuhusu hili utaona tu",sw,manipulation,4,,emotional_blackmail,utaona tu,Veiled threat used to enforce silence — also distress_trigger
+SE009,"Wewe ni umbwa tu hufai kitu",sw,offensive_language,3,,,umbwa,Slur-level insult using animal comparison
+SE010,"Malaya wewe unafikiri unajua hata nini",sw,offensive_language,4,,,Malaya,Sexual shaming language directed at individual — severity 4
+SE011,"ODM hawafanyi kazi vizuri hata kidogo",sw,clean,,,,,Policy criticism — not hate speech
+SE012,"Tutakukumbuka vizuri baada ya uchaguzi hii",sw,distress_trigger,4,,,Tutakukumbuka,Coded post-election threat — common intimidation pattern in Kenya
+SE013,"You're just being too sensitive as always",en,gaslighting,2,,,too sensitive as always,Dismisses target's emotional response as personality flaw
+SE014,"If you leave me I will hurt myself",en,manipulation,5,,emotional_blackmail,If you leave me I will hurt myself,Explicit emotional blackmail using self-harm threat — severity 5
+SE015,"Haukuwepo hivyo. Unafikiria tu.",sw,gaslighting,3,,,Haukuwepo hivyo. Unafikiria tu.,Double denial — denies event and denies thought process
+SE016,"Sina shida na wewe bora ufanye kama nilivyosema",sw,manipulation,2,,false_urgency,bora ufanye kama nilivyosema,Implicit coercion through conditional acceptance
+SE017,"Wakisii ni wezi wote — historia inasema hivyo",sw,hate_speech,3,ethnicity_other,,Wakisii ni wezi wote,Ethnic group collective criminality claim
+SE018,"Nilikupigia simu usiku lakini hukujibu",sw,clean,,,,,Neutral statement — no harmful intent detectable
+SE019,"Shida yako ni kwamba wewe ni mjinga na mwenye kiburi",sw,offensive_language,2,,,mjinga na mwenye kiburi,Personal insult — two negative attributes attributed
+SE020,"After everything I sacrificed for this family you treat me like this",en,manipulation,3,,guilt_tripping,everything I sacrificed for this family,Sacrifice-framing guilt trip in family context
+SE021,"You were never smart enough for this — I don't know why I thought you could do it",en,offensive_language,3,,,never smart enough,Degrading personal attack on intelligence
+SE022,"Hizi story zako za unyanyasaji ni uwongo tu unatafuta umakini",sw,gaslighting,4,,,story zako za unyanyasaji ni uwongo,Dismisses abuse report as fabrication — high severity
+SE023,"Watu wa dini fulani hawapaswi kuaminiwa katika serikali",sw,hate_speech,3,religion_other,,Watu wa dini fulani hawapaswi kuaminiwa,Religious exclusion from civic participation
+SE024,"Kama hutafanya hivyo basi sisi si marafiki tena",sw,manipulation,2,,threats_of_abandonment,sisi si marafiki tena,Withdrawal of relationship as coercive leverage
+SE025,"Ukiniambia ukweli nitakupenda zaidi — usifiche chochote",sw,manipulation,2,,love_bombing,nitakupenda zaidi,Love-bombing used to extract information
+SE026,"Kenya itaunguka kama watu hawa wakishinda uchaguzi",sw,distress_trigger,3,,,Kenya itaunguka,Catastrophising political prediction designed to cause fear
+SE027,"Ulikuwa unalia nini? Ulikuwa na furaha kabla sijakuja?",sw,gaslighting,2,,,Ulikuwa na furaha kabla sijakuja,Implies target's distress is caused by them being present — guilt + reality distortion
+SE028,"This is hard to label — could be sarcasm or genuine threat: 'tutaonana baadaye'",sw,ambiguous,2,,,tutaonana baadaye,Context-dependent — 'we'll meet later' can be neutral or a threat
+SE029,"Mtu yeyote anayempiga kura huyo ni adui wa taifa",sw,hate_speech,3,political,,adui wa taifa,Political group dehumanised as national enemy — incitement potential
+SE030,"You always do this. You ruin everything. You are the problem.",en,offensive_language,3,,,You ruin everything. You are the problem.,Sustained personal attack — 'always' framing escalates severity

@@ -1,0 +1,91 @@
+<View>
+  <Style>
+    .lsf-main-content { font-family: sans-serif; }
+    .category-header { font-weight: bold; margin-top: 12px; }
+  </Style>
+
+  <!-- The text being annotated -->
+  <Text name="text" value="$text" granularity="word"/>
+
+  <!-- Language detection -->
+  <Header value="Language"/>
+  <Choices name="language" toName="text" choice="single" showInline="true">
+    <Choice value="en" label="English"/>
+    <Choice value="sw" label="Swahili"/>
+    <Choice value="sheng" label="Sheng"/>
+    <Choice value="mixed" label="Mixed / Code-switched"/>
+  </Choices>
+
+  <!-- Primary labels -->
+  <Header value="Category (select all that apply)"/>
+  <Choices name="category" toName="text" choice="multiple" showInline="false">
+    <Choice value="hate_speech"        label="Hate Speech"/>
+    <Choice value="offensive_language" label="Offensive Language"/>
+    <Choice value="distress_trigger"   label="Distress-Triggering"/>
+    <Choice value="gaslighting"        label="Gaslighting"/>
+    <Choice value="manipulation"       label="Manipulation"/>
+    <Choice value="ambiguous"          label="Ambiguous / Needs Review"/>
+    <Choice value="clean"              label="Clean — no harm detected"/>
+  </Choices>
+
+  <!-- Severity -->
+  <Header value="Severity (1 = mild, 5 = extreme)"/>
+  <Rating name="severity" toName="text" maxRating="5" icon="star" size="medium"/>
+
+  <!-- Rationale spans — highlight the words that justify the label -->
+  <Header value="Highlight the exact words that justify your label"/>
+  <Labels name="rationale" toName="text">
+    <Label value="hate_speech"        background="#FF6B6B"/>
+    <Label value="offensive_language" background="#FFA500"/>
+    <Label value="distress_trigger"   background="#FFD700"/>
+    <Label value="gaslighting"        background="#9B59B6"/>
+    <Label value="manipulation"       background="#E74C3C"/>
+    <Label value="ambiguous"          background="#95A5A6"/>
+  </Labels>
+
+  <!-- Target group (only for hate_speech) -->
+  <Header value="If hate speech — who is targeted?"/>
+  <Choices name="target_group" toName="text" choice="multiple" showInline="true">
+    <Choice value="ethnicity_kikuyu"/>
+    <Choice value="ethnicity_luo"/>
+    <Choice value="ethnicity_kalenjin"/>
+    <Choice value="ethnicity_luhya"/>
+    <Choice value="ethnicity_somali"/>
+    <Choice value="ethnicity_other"/>
+    <Choice value="religion_muslim"/>
+    <Choice value="religion_christian"/>
+    <Choice value="religion_other"/>
+    <Choice value="gender_women"/>
+    <Choice value="gender_men"/>
+    <Choice value="gender_lgbtq"/>
+    <Choice value="political"/>
+    <Choice value="disability"/>
+    <Choice value="nationality"/>
+    <Choice value="not_applicable"/>
+  </Choices>
+
+  <!-- Manipulation tactic (only for manipulation) -->
+  <Header value="If manipulation — which tactic?"/>
+  <Choices name="tactic" toName="text" choice="multiple" showInline="true">
+    <Choice value="guilt_tripping"/>
+    <Choice value="emotional_blackmail"/>
+    <Choice value="love_bombing"/>
+    <Choice value="isolation"/>
+    <Choice value="false_urgency"/>
+    <Choice value="threats_of_abandonment"/>
+    <Choice value="triangulation"/>
+    <Choice value="not_applicable"/>
+  </Choices>
+
+  <!-- Annotator confidence -->
+  <Header value="How confident are you in this label?"/>
+  <Choices name="annotator_confidence" toName="text" choice="single" showInline="true">
+    <Choice value="1" label="Low — not sure"/>
+    <Choice value="2" label="Medium — fairly sure"/>
+    <Choice value="3" label="High — very sure"/>
+  </Choices>
+
+  <!-- Free text notes -->
+  <Header value="Notes (cultural context, edge cases, uncertainty)"/>
+  <TextArea name="notes" toName="text" placeholder="Optional — explain anything unusual about this label" rows="3"/>
+</View>

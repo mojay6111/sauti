@@ -1,0 +1,48 @@
+# Sauti training configuration
+# Edit this file to change model settings — do not hardcode values in train.py
+
+model:
+  type: baseline           # baseline | transformer
+  backbone: null           # for transformer: "Davlan/afro-xlmr-large" or "bert-base-multilingual-cased"
+  labels:
+    - hate_speech
+    - offensive_language
+    - distress_trigger
+    - gaslighting
+    - manipulation
+    - ambiguous
+    - clean
+
+data:
+  train_path: data/annotated/pilot_dataset.csv
+  test_size: 0.15
+  val_size: 0.15
+  random_state: 42
+  min_text_length: 3
+
+baseline:
+  tfidf_max_features: 50000
+  tfidf_ngram_range: [2, 5]
+  tfidf_analyzer: char_wb
+  lr_C: 1.0
+  lr_max_iter: 1000
+  prediction_threshold: 0.3
+
+transformer:
+  learning_rate: 2.0e-5
+  batch_size: 16
+  num_epochs: 5
+  warmup_steps: 100
+  weight_decay: 0.01
+  max_seq_length: 256
+  prediction_threshold: 0.4
+
+training:
+  output_dir: ml/runs
+  save_best_model: true
+  early_stopping_patience: 3
+  log_every_n_steps: 50
+
+mlflow:
+  experiment_name: sauti-harmful-speech
+  tracking_uri: mlruns

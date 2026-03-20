@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+*.egg
+.pytest_cache/
+.mypy_cache/
+
+# ML artifacts — never commit models or raw data
+ml/models/saved/
+ml/runs/
+data/raw/
+data/processed/
+*.pkl
+*.pt
+*.bin
+*.safetensors
+mlruns/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+.next/
+.nuxt/
+out/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Docker
+*.override.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Annotation exports (may contain PII)
+data/annotated/*.json
+data/annotated/*.csv
+!data/annotated/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp

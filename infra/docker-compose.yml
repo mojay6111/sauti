@@ -1,0 +1,94 @@
+services:
+
+  # -------------------------------------------------------------------------
+  # API — FastAPI inference service
+  # -------------------------------------------------------------------------
+  api:
+    build:
+      context: ..
+      dockerfile: api/Dockerfile
+    container_name: sauti-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../.env
+    volumes:
+      - ../ml/runs:/app/ml/runs          # trained models
+      - ../data/feedback:/app/data/feedback  # feedback logs
+    
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # -------------------------------------------------------------------------
+  # Trainer — runs once to produce a model, then exits
+  # -------------------------------------------------------------------------
+  train:
+    build:
+      context: ..
+      dockerfile: ml/Dockerfile
+    container_name: sauti-trainer
+    volumes:
+      - ../ml/runs:/app/ml/runs
+      - ../data:/app/data
+    env_file:
+      - ../.env
+    profiles:
+      - train    # only runs with: docker-compose --profile train up train
+
+  # -------------------------------------------------------------------------
+  # Annotation — Label Studio (self-hosted)
+  # -------------------------------------------------------------------------
+  annotation:
+    image: heartexlabs/label-studio:latest
+    container_name: sauti-label-studio
+    ports:
+      - "8080:8080"
+    volumes:
+      - label_studio_data:/label-studio/data
+      - ../annotation:/label-studio/files
+    environment:
+      - LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
+      - LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=/label-studio/files
+    profiles:
+      - annotation   # only runs with: docker-compose --profile annotation up
+
+  # -------------------------------------------------------------------------
+  # Web dashboard — Next.js (dev mode)
+  # -------------------------------------------------------------------------
+  web:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    container_name: sauti-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - api
+    profiles:
+      - web
+
+  # -------------------------------------------------------------------------
+  # Nginx reverse proxy (production)
+  # -------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: sauti-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - api
+    profiles:
+      - production
+
+volumes:
+  label_studio_data:
