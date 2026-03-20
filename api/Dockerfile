@@ -1,21 +1,19 @@
 FROM python:3.11-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+    build-essential curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# ML deps needed because API loads model directly
-COPY ml/requirements.txt ./ml/requirements.txt
-COPY api/requirements.txt ./api/requirements.txt
-RUN pip install --no-cache-dir -r ml/requirements.txt -r api/requirements.txt
+COPY api/requirements_slim.txt ./api/requirements_slim.txt
+RUN pip install --no-cache-dir -r api/requirements_slim.txt
 
-# Source
 COPY ml/ ./ml/
 COPY api/ ./api/
 COPY data/schemas/ ./data/schemas/
 COPY annotation/seed_examples/ ./annotation/seed_examples/
+COPY data/annotated/ ./data/annotated/
 
 RUN mkdir -p ml/runs data/feedback
 
